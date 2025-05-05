@@ -59,4 +59,9 @@ urllib3==2.3.0
 wheel==0.44.0
 wikipedia==1.4.0
 yarl==1.18.3
+gunicorn
+psycopg2-binary
+dj-database-url
+whitenoise
+
 

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Регистрация — EcoTracker</title>
+  <style>
+    /* Flex-контейнер для центрирования */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url('https://www.un.org/osaa/sites/www.un.org.osaa/files/styles/panopoly_image_original/public/news_articles/forest._un_photo._mark_garten.png?itok=vL_LoWk9')
+                  no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: #2e3a2b;
+    }
+
+    /* Оформление контейнера */
+    .container {
+      width: 360px;
+      padding: 30px;
+      background: rgba(245, 250, 240, 0.95);
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(46, 58, 43, 0.3);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #3b5e3b;
+      font-size: 1.5rem;
+    }
+
+    form p {
+      margin: 0.5rem 0;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #a3c9a8;
+      font-size: 1rem;
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.8);
+      color: #2e3a2b;
+    }
+
+    button {
+      background: #76b852;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #658e4a;
+    }
+
+    a {
+      color: #558b2f;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-text {
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Регистрация в EcoTracker</h2>
+    <form method="post" action="{% url 'users:registration' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Зарегистрироваться</button>
+    </form>
+    <p class="footer-text">
+      Уже есть аккаунт? <a href="{% url 'users:login' %}">Войти</a>
+    </p>
+  </div>
+</body>
+</html>

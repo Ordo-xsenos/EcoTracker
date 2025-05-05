@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Достижения — EcoTracker</title>
+    {% include 'partials/tailwind.html' %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+<div class="page-wrapper">
+    <!-- Шапка -->
+    <header class="ec-header">
+        <div class="ec-header__logo">
+            <img
+                    src="/media/2.png"
+                    alt="EcoTracker"
+                    class="ec-header__logo-img"
+            >
+        </div>
+        <nav class="ec-nav">
+            <a href="{% url 'main:home' %}" class="ec-nav__link">Главная</a>
+            <a href="{% url 'main:achievement' %}" class="ec-nav__link ec-nav__link--active">Достижения</a>
+            <a href="{% url 'main:tracker' %}" class="ec-nav__link">Трекер</a>
+            <a href="{% url 'main:tips' %}" class="ec-nav__link">Советы</a>
+            <a href="{% url 'main:sharing' %}" class="ec-nav__link">Общение</a>
+        </nav>
+        <div class="ec-auth">
+            {% if user.is_authenticated %}
+            <!-- Приветствие -->
+            <span class="ec-auth__greeting">Привет, {{ user.username }}</span>
+            <!-- Форма выхода -->
+            <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit"
+                        class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors duration-200">
+                    Выйти
+                </button>
+            </form>
+            {% else %}
+            <a href="{% url 'users:login' %}"
+               class="ec-header__login px-4 py-2 rounded-md border border-green-600 text-green-600 hover:bg-green-50 transition-colors duration-200">Войти</a>
+            <a href="{% url 'users:registration' %}"
+               class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors duration-200">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="container ec-main">
+        {% if show_login_prompt %}
+        <!-- блок приглашения -->
+        <main class="flex flex-grow items-center justify-center ">
+            <div class="coming-wrapper">
+                <h1 class="text-6xl font-bold text-center">Чтобы получать достижения, нужно войти в аккаунт</h1>
+            </div>
+        </main>
+        {% else %}
+        <div class="ec-scoreboard">
+            Всего очков: {{ total_score }}
+        </div>
+
+        <section>
+            <h1>Мои достижения</h1>
+            <div class="ec-achievements-list">
+                {% for ach in achievements %}
+                <div class="ec-achievement-item {% if not ach.completed %}locked{% endif %}">
+                    <div class="ec-achievement-item__icon">{{ ach.icon }}</div>
+                    <div class="ec-achievement-item__body">
+                        <div class="ec-achievement-item__title">{{ ach.title }}</div>
+                        <div class="ec-achievement-item__desc">{{ ach.description }}</div>
+                        <div class="ec-achievement-item__date">
+                            {% if ach.completed %}
+                            Получено: {{ ach.date_awarded }}
+                            {% else %}
+                            Не выполнено
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>Достижения ещё не заданы.</p>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+
+</div>
+
+<!-- Футер -->
+<footer class="ec-footer">
+    &copy; 2025 EcoTracker
+</footer>
+</body>
+</html>

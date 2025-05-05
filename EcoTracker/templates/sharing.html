@@ -1,0 +1,83 @@
+<!-- templates/sharing.html -->
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Общение — EcoTracker</title>
+    <!-- Tailwind CSS -->
+    {% include 'partials/tailwind.html' %}
+    <!-- Собственные стили -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Анимация пульсации для #webcrumbs -->
+    <style>
+        html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden; /* Убираем скроллбар */
+        }
+        /* Статический блок вокруг текста */
+        .coming-wrapper {
+          background-color: rgba(255, 255, 255, 0.85);
+          padding: 2rem 3rem;
+          border-radius: 1rem;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          max-width: 90vw;
+          max-height: 70vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- Шапка -->
+    <header class="ec-header">
+        <div class="ec-header__logo">
+            <img src="/media/2.png" alt="EcoTracker" class="ec-header__logo-img">
+        </div>
+        <nav class="ec-nav">
+            <a href="{% url 'main:home' %}" class="ec-nav__link">Главная</a>
+            <a href="{% url 'main:achievement' %}" class="ec-nav__link">Достижения</a>
+            <a href="{% url 'main:tracker' %}" class="ec-nav__link">Трекер</a>
+            <a href="{% url 'main:tips' %}" class="ec-nav__link">Советы</a>
+            <a href="{% url 'main:sharing' %}" class="ec-nav__link ec-nav__link--active">Общение</a>
+        </nav>
+        <div class="ec-auth">
+            {% if user.is_authenticated %}
+            <span class="ec-auth__greeting">Привет, {{ user.username }}</span>
+            <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit"
+                        class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors duration-200">
+                    Выйти
+                </button>
+            </form>
+            {% else %}
+            <a href="{% url 'users:login' %}"
+               class="ec-header__login px-4 py-2 rounded-md border border-green-600 text-green-600 hover:bg-green-50 transition-colors duration-200">Войти</a>
+            <a href="{% url 'users:registration' %}"
+               class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors duration-200">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="flex flex-grow items-center justify-center ">
+        <div class="coming-wrapper">
+            <h1 class="text-6xl font-bold text-center">Coming Soon</h1>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="ec-footer">
+        &copy; 2025 EcoTracker
+    </footer>
+
+</div>
+</body>
+</html>

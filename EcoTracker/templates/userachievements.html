@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Мои достижения</h1>
+  <ul>
+    {% for ua in user_achievements %}
+      <li>
+        <img src="{{ ua.achievement.icon.url }}" alt="{{ ua.achievement.title }}">
+        {{ ua.achievement.title }}
+      </li>
+    {% empty %}
+      <p>У вас пока нет достижений.</p>
+    {% endfor %}
+  </ul>
+{% endblock %}

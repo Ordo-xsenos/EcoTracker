@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Трекер — EcoTracker</title>
+    {% include 'partials/tailwind.html' %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- Шапка -->
+    <header class="ec-header">
+        <div class="ec-header__logo">
+            <img src="/media/2.png"
+                 alt="EcoTracker"
+                 class="ec-header__logo-img">
+        </div>
+        <nav class="ec-nav">
+            <a href="{% url 'main:home' %}" class="ec-nav__link">Главная</a>
+            <a href="{% url 'main:achievement' %}" class="ec-nav__link">Достижения</a>
+            <a href="{% url 'main:tracker' %}" class="ec-nav__link ec-nav__link--active">Трекер</a>
+            <a href="{% url 'main:tips' %}" class="ec-nav__link">Советы</a>
+            <a href="{% url 'main:sharing' %}" class="ec-nav__link">Общение</a>
+        </nav>
+        <div class="ec-auth">
+            {% if user.is_authenticated %}
+            <!-- Приветствие -->
+            <span class="ec-auth__greeting">Привет, {{ user.username }}</span>
+            <!-- Форма выхода -->
+            <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit"
+                        class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors duration-200">
+                    Выйти
+                </button>
+            </form>
+            {% else %}
+            <a href="{% url 'users:login' %}"
+               class="ec-header__login px-4 py-2 rounded-md border border-green-600 text-green-600 hover:bg-green-50 transition-colors duration-200">Войти</a>
+            <a href="{% url 'users:registration' %}"
+               class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors duration-200">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+    <!-- Основной контент -->
+     <main class="flex-grow container mx-auto px-4 py-8 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">Калькулятор углеродного следа</h1>
+        <p class="text-lg md:text-xl mb-8">Введите свои данные — и мы посчитаем ваш CO₂.</p>
+
+        <form id="tracker-form" class="ec-form max-w-md mx-auto space-y-6 text-left">
+            <div class="form-group">
+                <label for="distance" class="block font-semibold">Километров на авто в неделю:</label>
+                <input type="number" id="distance" placeholder="100" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div class="form-group">
+                <label for="meat" class="block font-semibold">Сколько раз в неделю едите мясо:</label>
+                <input type="number" id="meat" placeholder="4" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div class="form-group">
+                <label for="electricity" class="block font-semibold">Электроэнергия (кВт·ч в месяц):</label>
+                <input type="number" id="electricity" placeholder="250" class="w-full border px-3 py-2 rounded">
+            </div>
+            <button type="button" id="calculate" class="ec-button w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors duration-200">Рассчитать</button>
+        </form>
+
+        <section id="results" class="hidden ec-results mt-10">
+            <h2 class="text-2xl font-semibold">Ваш углеродный след:</h2>
+            <p id="co2-output" class="ec-output text-xl mt-2"></p>
+            <div id="tips" class="ec-tips mt-4"></div>
+        </section>
+    </main>
+
+</div>
+
+<!-- Футер -->
+<footer class="ec-footer">
+    &copy; 2025 EcoTracker
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

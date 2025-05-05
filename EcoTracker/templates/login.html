@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — EcoTracker</title>
+    <style>
+        /* Общие настройки */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url('https://static.wixstatic.com/media/648e8c_54916f3719b843aa95f08a8a4fe9b5dc~mv2.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #2e3a2b; /* тёмно-зелёный текст */
+        }
+        .container {
+            width: 360px;
+            padding: 30px;
+            background: rgba(245, 250, 240, 0.9); /* светло-зелёный фон */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(46, 58, 43, 0.3);
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #3b5e3b; /* более насыщенный зелёный */
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #a3c9a8; /* бледно-зелёная рамка */
+            font-size: 1rem;
+        }
+        input {
+            background: rgba(255, 255, 255, 0.8);
+            color: #2e3a2b;
+        }
+        button {
+            background: #76b852; /* ярко-зелёная кнопка */
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #658e4a;
+        }
+        a {
+            color: #558b2f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Вход в EcoTracker</h2>
+        <form method="post" action="{% url 'users:login' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            <button type="submit">Войти</button>
+        </form>
+        <p>Нет аккаунта? <a href="{% url 'users:registration' %}">Зарегистрироваться</a></p>
+    </div>
+</body>
+</html>

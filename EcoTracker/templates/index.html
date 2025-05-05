@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>EcoTracker</title>
+    {% include 'partials/tailwind.html' %}
+    <style>
+        @import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
+        @import url(https://fonts.googleapis.com/css2?family=Open+Sans&display=swap);
+        @import url(https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200);
+        @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css);
+    </style>
+</head>
+<body>
+
+<div class="w-full min-h-screen bg-white">
+    <header class="ec-header sticky top-0 bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="ec-header__logo flex items-center space-x-2">
+                <svg
+                        class="w-8 h-8 text-green-600"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                            d="M21 9C21 12.3137 18.3137 15 15 15C11.6863 15 9 12.3137 9 9C9 5.68629 11.6863 3 15 3C18.3137 3 21 5.68629 21 9Z"
+                            fill="currentColor"
+                            fill-opacity="0.2"
+                    ></path>
+                    <path
+                            d="M15 17C10.5817 17 7 13.4183 7 9C7 6.5 8.5 3 11.5 3C9.5 3 3 4 3 11C3 16.5 7 18.5 9.5 18.5C12 18.5 14 17.5 16 16"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                    ></path>
+                    <path
+                            d="M15.5 8.5C16.3284 8.5 17 7.82843 17 7C17 6.17157 16.3284 5.5 15.5 5.5C14.6716 5.5 14 6.17157 14 7C14 7.82843 14.6716 8.5 15.5 8.5Z"
+                            fill="currentColor"
+                    ></path>
+                </svg>
+                <span class="ec-header__logo-text font-bold text-xl text-green-600">EcoTracker</span>
+            </div>
+            <nav class="ec-header__nav hidden md:flex items-center space-x-6">
+                <a
+                        href="{% url 'main:home' %}"
+                        class="ec-header__nav-link font-medium hover:text-green-600 transition-colors duration-200 border-b-2 border-green-600"
+                >Главная</a
+                >
+                <a
+                        href="{% url 'main:achievement'%}"
+                        class="ec-header__nav-link font-medium hover:text-green-600 transition-colors duration-200 border-b-2 border-transparent hover:border-green-600"
+                >Достижения</a
+                >
+                <a
+                        href="{% url 'main:tracker' %}"
+                        class="ec-header__nav-link font-medium hover:text-green-600 transition-colors duration-200 border-b-2 border-transparent hover:border-green-600"
+                >Трекер</a
+                >
+                <a
+                        href="{% url 'main:tips' %}"
+                        class="ec-header__nav-link font-medium hover:text-green-600 transition-colors duration-200 border-b-2 border-transparent hover:border-green-600"
+                >Советы</a
+                >
+                <a
+                        href="#"
+                        class="ec-header__nav-link font-medium hover:text-green-600 transition-colors duration-200 border-b-2 border-transparent hover:border-green-600"
+                >Общение</a
+                >
+            </nav>
+            <div class="ec-auth">
+                {% if user.is_authenticated %}
+                <!-- Приветствие -->
+                <span class="ec-auth__greeting">Привет, {{ user.username }}</span>
+                <!-- Форма выхода -->
+                <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors duration-200">
+                        Выйти
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'users:login' %}"
+                   class="ec-header__login px-4 py-2 rounded-md border border-green-600 text-green-600 hover:bg-green-50 transition-colors duration-200">Войти</a>
+                <a href="{% url 'users:registration' %}"
+                   class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors duration-200">Регистрация</a>
+                {% endif %}
+            </div>
+            <button class="ec-header__mobile-toggle md:hidden text-green-600">
+                <span class="material-symbols-outlined text-3xl">menu</span>
+            </button>
+            <div
+                    class="ec-header__mobile-menu absolute top-full left-0 w-full bg-white shadow-lg transform -translate-y-full opacity-0 transition-all duration-300 md:hidden"
+            >
+                <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                    <div class="ec-header__auth-mobile flex flex-col space-y-3 pt-2">
+                        <a
+                                href="{% url 'users:login' %}"
+                                class="ec-header__login px-4 py-2 rounded-md border border-green-600 text-green-600 text-center"
+                        >Войти</a
+                        >
+                        <a
+                                href="{% url 'users:registration' %}"
+                                class="ec-header__register px-4 py-2 rounded-md bg-green-600 text-white text-center"
+                        >Регистрация</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="ec-hero bg-gradient-to-br from-green-50 to-green-100">
+        <div class="container mx-auto px-4 py-16 md:py-24 flex flex-col md:flex-row items-center">
+            <div class="ec-hero__content w-full md:w-1/2 mb-8 md:mb-0">
+                <h1
+                        class="ec-hero__title text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-800 leading-tight"
+                >
+                    EcoTracker — ваш личный помощник по экологической статистике
+                </h1>
+                <p class="ec-hero__description text-lg md:text-xl text-gray-600 mb-8">
+                    Отслеживайте свои экологические привычки, получайте персональные рекомендации и вносите
+                    свой вклад в защиту планеты вместе с нами.
+                </p>
+                <div class="ec-hero__buttons flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a
+                            href="#"
+                            class="ec-hero__cta px-8 py-3 bg-green-600 text-white rounded-lg text-center text-lg font-medium hover:bg-green-700 transition-colors duration-200 transform hover:scale-105"
+                    >
+                        Начать
+                    </a>
+                    <a
+                            href="#"
+                            class="ec-hero__secondary px-8 py-3 border-2 border-green-600 text-green-600 rounded-lg text-center text-lg font-medium hover:bg-green-50 transition-colors duration-200"
+                    >
+                        Узнать больше
+                    </a>
+                </div>
+            </div>
+            <div class="ec-hero__image w-full md:w-1/2 flex justify-center">
+                <img
+                        src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w3MzkyNDZ8MHwxfHNlYXJjaHwxfHxuYXR1cmV8ZW58MHx8fHwxNzQ2MjQzMzUxfDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080"
+                        alt="Экологическая статистика"
+                        class="rounded-lg shadow-xl transform hover:rotate-2 transition-transform duration-300 max-w-full h-auto"
+                        keywords="nature, ecology, environment, green, sustainable living"
+                />
+            </div>
+        </div>
+    </section>
+    <section class="ec-features py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="ec-features__title text-3xl md:text-4xl font-bold text-center mb-4">
+                Основные функции
+            </h2>
+            <p class="ec-features__subtitle text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+                Множество инструментов для отслеживания экологического следа и формирования полезных
+                привычек
+            </p>
+            <div class="ec-features__grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div
+                        class="ec-features__card bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200 transform hover:-translate-y-1"
+                >
+                    <div
+                            class="ec-features__icon-wrapper mx-auto mb-6 p-4 bg-green-100 rounded-full w-20 h-20 flex items-center justify-center"
+                    >
+                        <span class="material-symbols-outlined text-4xl text-green-600">leaderboard</span>
+                    </div>
+                    <h3 class="ec-features__card-title text-xl font-semibold text-center mb-3">
+                        Система баллов
+                    </h3>
+                    <p class="ec-features__card-description text-gray-600 text-center">
+                        Зарабатывайте экобаллы за каждую полезную привычку и следите за своим прогрессом в
+                        режиме реального времени.
+                    </p>
+                </div>
+                <div
+                        class="ec-features__card bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200 transform hover:-translate-y-1"
+                >
+                    <div
+                            class="ec-features__icon-wrapper mx-auto mb-6 p-4 bg-green-100 rounded-full w-20 h-20 flex items-center justify-center"
+                    >
+                        <span class="material-symbols-outlined text-4xl text-green-600">emoji_events</span>
+                    </div>
+                    <h3 class="ec-features__card-title text-xl font-semibold text-center mb-3">
+                        Экологические челленджи
+                    </h3>
+                    <p class="ec-features__card-description text-gray-600 text-center">
+                        Принимайте участие в еженедельных и месячных экологических вызовах и соревнуйтесь с
+                        другими участниками.
+                    </p>
+                </div>
+                <div
+                        class="ec-features__card bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200 transform hover:-translate-y-1"
+                >
+                    <div
+                            class="ec-features__icon-wrapper mx-auto mb-6 p-4 bg-green-100 rounded-full w-20 h-20 flex items-center justify-center"
+                    >
+                                    <span class="material-symbols-outlined text-4xl text-green-600"
+                                    >tips_and_updates</span
+                                    >
+                    </div>
+                    <h3 class="ec-features__card-title text-xl font-semibold text-center mb-3">
+                        Персональные советы
+                    </h3>
+                    <p class="ec-features__card-description text-gray-600 text-center">
+                        Получайте индивидуальные рекомендации по улучшению ваших экологических показателей
+                        на основе ваших привычек.
+                    </p>
+                </div>
+                <div
+                        class="ec-features__card bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200 transform hover:-translate-y-1"
+                >
+                    <div
+                            class="ec-features__icon-wrapper mx-auto mb-6 p-4 bg-green-100 rounded-full w-20 h-20 flex items-center justify-center"
+                    >
+                        <span class="material-symbols-outlined text-4xl text-green-600">monitoring</span>
+                    </div>
+                    <h3 class="ec-features__card-title text-xl font-semibold text-center mb-3">
+                        Статистика прогресса
+                    </h3>
+                    <p class="ec-features__card-description text-gray-600 text-center">
+                        Отслеживайте ваш прогресс через наглядные графики и диаграммы, анализируйте свои
+                        экологические достижения.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="ec-how-it-works py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="ec-how-it-works__title text-3xl md:text-4xl font-bold text-center mb-4">
+                Как это работает
+            </h2>
+            <p class="ec-how-it-works__subtitle text-lg text-gray-600 text-center mb-16 max-w-3xl mx-auto">
+                Всего три простых шага, чтобы начать свой путь к экологическому образу жизни
+            </p>
+            <div class="ec-how-it-works__steps grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <div class="hidden md:block absolute top-24 left-1/4 right-1/4 h-1 bg-green-200"></div>
+                <div class="ec-how-it-works__step flex flex-col items-center relative">
+                    <div
+                            class="ec-how-it-works__step-number w-16 h-16 rounded-full bg-green-600 text-white flex items-center justify-center text-2xl font-bold mb-6 z-10"
+                    >
+                        1
+                    </div>
+                    <h3 class="ec-how-it-works__step-title text-xl font-semibold text-center mb-3">
+                        Регистрация
+                    </h3>
+                    <p class="ec-how-it-works__step-description text-gray-600 text-center">
+                        Создайте аккаунт, заполните профиль и расскажите о своих текущих привычках и образе
+                        жизни.
+                    </p>
+                </div>
+                <div class="ec-how-it-works__step flex flex-col items-center relative">
+                    <div
+                            class="ec-how-it-works__step-number w-16 h-16 rounded-full bg-green-600 text-white flex items-center justify-center text-2xl font-bold mb-6 z-10"
+                    >
+                        2
+                    </div>
+                    <h3 class="ec-how-it-works__step-title text-xl font-semibold text-center mb-3">
+                        Выбор челленджа
+                    </h3>
+                    <p class="ec-how-it-works__step-description text-gray-600 text-center">
+                        Выберите экологический челлендж по своему вкусу или пройдите опрос для получения
+                        персональных рекомендаций.
+                    </p>
+                </div>
+                <div class="ec-how-it-works__step flex flex-col items-center relative">
+                    <div
+                            class="ec-how-it-works__step-number w-16 h-16 rounded-full bg-green-600 text-white flex items-center justify-center text-2xl font-bold mb-6 z-10"
+                    >
+                        3
+                    </div>
+                    <h3 class="ec-how-it-works__step-title text-xl font-semibold text-center mb-3">
+                        Получение результатов
+                    </h3>
+                    <p class="ec-how-it-works__step-description text-gray-600 text-center">
+                        Зарабатывайте баллы и значки за выполнение задач, следите за своими достижениями и
+                        получайте новые рекомендации.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="ec-gamification py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="ec-gamification__title text-3xl md:text-4xl font-bold text-center mb-4">
+                Геймификация
+            </h2>
+            <p class="ec-gamification__subtitle text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+                Делайте экологию увлекательной — получайте баллы, значки и достижения за каждую полезную
+                привычку
+            </p>
+            <div
+                    class="ec-gamification__content flex flex-col md:flex-row items-center justify-between max-w-4xl mx-auto"
+            >
+                <div class="ec-gamification__description w-full md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                    <h3 class="text-2xl font-semibold mb-4">Система баллов и значков</h3>
+                    <p class="text-gray-600 mb-6">
+                        За каждое экологическое действие вы получаете баллы и значки. Соревнуйтесь с
+                        друзьями, достигайте новых уровней и открывайте эксклюзивные возможности. Чем больше
+                        баллов вы зарабатываете, тем выше ваш экологический статус.
+                    </p>
+                    <a
+                            href="#"
+                            class="inline-block px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                    >
+                        Подробнее о наградах
+                    </a>
+                </div>
+                <div class="ec-gamification__badges w-full md:w-1/2 grid grid-cols-3 gap-4">
+                    <div
+                            class="ec-gamification__badge flex flex-col items-center transform hover:scale-110 transition-transform duration-200"
+                    >
+                        <div
+                                class="ec-gamification__badge-icon w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-2"
+                        >
+                                        <span class="material-symbols-outlined text-yellow-600 text-3xl"
+                                        >local_florist</span
+                                        >
+                        </div>
+                        <span class="ec-gamification__badge-name text-sm font-medium text-center"
+                        >Эко-новичок</span
+                        >
+                    </div>
+                    <div
+                            class="ec-gamification__badge flex flex-col items-center transform hover:scale-110 transition-transform duration-200"
+                    >
+                        <div
+                                class="ec-gamification__badge-icon w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-2"
+                        >
+                            <span class="material-symbols-outlined text-blue-600 text-3xl">water_drop</span>
+                        </div>
+                        <span class="ec-gamification__badge-name text-sm font-medium text-center"
+                        >Водосбережение</span
+                        >
+                    </div>
+                    <div
+                            class="ec-gamification__badge flex flex-col items-center transform hover:scale-110 transition-transform duration-200"
+                    >
+                        <div
+                                class="ec-gamification__badge-icon w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-2"
+                        >
+                            <span class="material-symbols-outlined text-green-600 text-3xl">compost</span>
+                        </div>
+                        <span class="ec-gamification__badge-name text-sm font-medium text-center"
+                        >Мастер переработки</span
+                        >
+                    </div>
+                    <div
+                            class="ec-gamification__badge flex flex-col items-center transform hover:scale-110 transition-transform duration-200"
+                    >
+                        <div
+                                class="ec-gamification__badge-icon w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-2"
+                        >
+                                        <span class="material-symbols-outlined text-red-600 text-3xl"
+                                        >electric_bolt</span
+                                        >
+                        </div>
+                        <span class="ec-gamification__badge-name text-sm font-medium text-center"
+                        >Энергосбережение</span
+                        >
+                    </div>
+                    <div
+                            class="ec-gamification__badge flex flex-col items-center transform hover:scale-110 transition-transform duration-200"
+                    >
+                        <div
+                                class="ec-gamification__badge-icon w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-2"
+                        >
+                                        <span class="material-symbols-outlined text-purple-600 text-3xl"
+                                        >directions_bike</span
+                                        >
+                        </div>
+                        <span class="ec-gamification__badge-name text-sm font-medium text-center"
+                        >Эко-транспорт</span
+                        >
+                    </div>
+                    <div
+                            class="ec-gamification__badge flex flex-col items-center transform hover:scale-110 transition-transform duration-200"
+                    >
+                        <div
+                                class="ec-gamification__badge-icon w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-2"
+                        >
+                                        <span class="material-symbols-outlined text-amber-600 text-3xl"
+                                        >restaurant</span
+                                        >
+                        </div>
+                        <span class="ec-gamification__badge-name text-sm font-medium text-center"
+                        >Эко-питание</span
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="ec-testimonials py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="ec-testimonials__title text-3xl md:text-4xl font-bold text-center mb-4">
+                Отзывы пользователей
+            </h2>
+            <p class="ec-testimonials__subtitle text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+                Узнайте, что говорят люди, которые уже используют EcoTracker в своей жизни
+            </p>
+            <div class="ec-testimonials__slider grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div
+                        class="ec-testimonials__card bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
+                >
+                    <div class="ec-testimonials__quote mb-6 text-gray-600 italic">
+                        &quot;С помощью EcoTracker я начала осознанно относиться к своим привычкам. За три
+                        месяца сократила потребление пластика на 70% и научилась правильно сортировать
+                        мусор. Рекомендую всем!&quot;
+                    </div>
+                    <div class="ec-testimonials__author flex items-center">
+                        <img
+                                src="https://images.unsplash.com/photo-1664575602554-2087b04935a5?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w3MzkyNDZ8MHwxfHNlYXJjaHwxfHx3b21hbnxlbnwwfHx8fDE3NDYyMTEzNzR8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080"
+                                alt="Анна К."
+                                class="w-12 h-12 rounded-full mr-4 object-cover"
+                                keywords="woman, user, profile picture, testimonial"
+                        />
+                        <div>
+                            <div class="ec-testimonials__name font-semibold">Анна К.</div>
+                            <div class="ec-testimonials__location text-sm text-gray-500">Москва</div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                        class="ec-testimonials__card bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
+                >
+                    <div class="ec-testimonials__quote mb-6 text-gray-600 italic">
+                        &quot;EcoTracker полностью изменил моё отношение к экологии. Челленджи действительно
+                        мотивируют, а система баллов создаёт здоровую конкуренцию среди друзей. Теперь
+                        эко-привычки — часть моей жизни!&quot;
+                    </div>
+                    <div class="ec-testimonials__author flex items-center">
+                        <img
+                                src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w3MzkyNDZ8MHwxfHNlYXJjaHwxfHxtYW58ZW58MHx8fHwxNzQ2MjExMzgzfDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080"
+                                alt="Дмитрий П."
+                                class="w-12 h-12 rounded-full mr-4 object-cover"
+                                keywords="man, user, profile picture, testimonial"
+                        />
+                        <div>
+                            <div class="ec-testimonials__name font-semibold">Дмитрий П.</div>
+                            <div class="ec-testimonials__location text-sm text-gray-500">
+                                Санкт-Петербург
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                        class="ec-testimonials__card bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
+                >
+                    <div class="ec-testimonials__quote mb-6 text-gray-600 italic">
+                        &quot;Пользуюсь приложением вместе с семьёй. Для детей это как игра, они с
+                        удовольствием зарабатывают значки. А мы с мужем видим реальную экономию на счетах за
+                        воду и электричество!&quot;
+                    </div>
+                    <div class="ec-testimonials__author flex items-center">
+                        <img
+                                src="https://images.unsplash.com/photo-1664575599618-8f6bd76fc670?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w3MzkyNDZ8MHwxfHNlYXJjaHwyfHx3b21hbnxlbnwwfHx8fDE3NDYyMTEzNzR8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080"
+                                alt="Елена М."
+                                class="w-12 h-12 rounded-full mr-4 object-cover"
+                                keywords="woman, user, profile picture, testimonial"
+                        />
+                        <div>
+                            <div class="ec-testimonials__name font-semibold">Елена М.</div>
+                            <div class="ec-testimonials__location text-sm text-gray-500">Екатеринбург</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ec-testimonials__dots flex justify-center mt-8 space-x-2">
+                <button class="w-3 h-3 bg-green-600 rounded-full"></button>
+                <button
+                        class="w-3 h-3 bg-green-200 rounded-full hover:bg-green-400 transition-colors duration-200"
+                ></button>
+                <button
+                        class="w-3 h-3 bg-green-200 rounded-full hover:bg-green-400 transition-colors duration-200"
+                ></button>
+            </div>
+        </div>
+    </section>
+    <section class="ec-cta py-16 bg-green-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="ec-cta__title text-3xl md:text-4xl font-bold mb-4">
+                Начните делать мир лучше уже сегодня
+            </h2>
+            <p class="ec-cta__subtitle text-xl mb-8 max-w-3xl mx-auto">
+                Присоединяйтесь к сообществу людей, меняющих планету к лучшему с помощью маленьких
+                ежедневных привычек
+            </p>
+            <a
+                    href="{% url 'users:registration' %}"
+                    class="ec-cta__button inline-block px-8 py-4 bg-white text-green-600 rounded-lg text-lg font-semibold hover:bg-green-50 transition-colors duration-200 transform hover:scale-105"
+            >
+                Создать аккаунт бесплатно
+            </a>
+        </div>
+    </section>
+    <footer class="ec-footer bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="ec-footer__content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="ec-footer__column">
+                    <div class="ec-footer__logo flex items-center space-x-2 mb-4">
+                        <svg
+                                class="w-6 h-6 text-green-400"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                    d="M21 9C21 12.3137 18.3137 15 15 15C11.6863 15 9 12.3137 9 9C9 5.68629 11.6863 3 15 3C18.3137 3 21 5.68629 21 9Z"
+                                    fill="currentColor"
+                                    fill-opacity="0.2"
+                            ></path>
+                            <path
+                                    d="M15 17C10.5817 17 7 13.4183 7 9C7 6.5 8.5 3 11.5 3C9.5 3 3 4 3 11C3 16.5 7 18.5 9.5 18.5C12 18.5 14 17.5 16 16"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                            ></path>
+                            <path
+                                    d="M15.5 8.5C16.3284 8.5 17 7.82843 17 7C17 6.17157 16.3284 5.5 15.5 5.5C14.6716 5.5 14 6.17157 14 7C14 7.82843 14.6716 8.5 15.5 8.5Z"
+                                    fill="currentColor"
+                            ></path>
+                        </svg>
+                        <span class="font-bold text-lg">EcoTracker</span>
+                    </div>
+                    <p class="ec-footer__description text-gray-400 mb-4">
+                        Сервис для отслеживания экологических привычек и статистики. Помогаем людям вести
+                        более осознанный и экологичный образ жизни.
+                    </p>
+                    <div class="ec-footer__social flex space-x-4">
+                        <a
+                                href="#"
+                                class="ec-footer__social-link text-gray-400 hover:text-white transition-colors duration-200"
+                        >
+                            <i class="fa-brands fa-facebook text-xl"></i>
+                        </a>
+                        <a
+                                href="#"
+                                class="ec-footer__social-link text-gray-400 hover:text-white transition-colors duration-200"
+                        >
+                            <i class="fa-brands fa-twitter text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        content: ["./src/**/*.{html,js}"],
+        theme: {
+            name: "Bluewave",
+            fontFamily: {
+                sans: [
+                    "Open Sans",
+                    "ui-sans-serif",
+                    "system-ui",
+                    "sans-serif",
+                    '"Apple Color Emoji"',
+                    '"Segoe UI Emoji"',
+                    '"Segoe UI Symbol"',
+                    '"Noto Color Emoji"'
+                ]
+            },
+            extend: {
+                fontFamily: {
+                    title: [
+                        "Lato",
+                        "ui-sans-serif",
+                        "system-ui",
+                        "sans-serif",
+                        '"Apple Color Emoji"',
+                        '"Segoe UI Emoji"',
+                        '"Segoe UI Symbol"',
+                        '"Noto Color Emoji"'
+                    ],
+                    body: [
+                        "Open Sans",
+                        "ui-sans-serif",
+                        "system-ui",
+                        "sans-serif",
+                        '"Apple Color Emoji"',
+                        '"Segoe UI Emoji"',
+                        '"Segoe UI Symbol"',
+                        '"Noto Color Emoji"'
+                    ]
+                },
+                colors: {
+                    neutral: {
+                        50: "#f7f7f7",
+                        100: "#eeeeee",
+                        200: "#e0e0e0",
+                        300: "#cacaca",
+                        400: "#b1b1b1",
+                        500: "#999999",
+                        600: "#7f7f7f",
+                        700: "#676767",
+                        800: "#545454",
+                        900: "#464646",
+                        950: "#282828"
+                    },
+                    primary: {
+                        50: "#f3f1ff",
+                        100: "#e9e5ff",
+                        200: "#d5cfff",
+                        300: "#b7a9ff",
+                        400: "#9478ff",
+                        500: "#7341ff",
+                        600: "#631bff",
+                        700: "#611bf8",
+                        800: "#4607d0",
+                        900: "#3c08aa",
+                        950: "#220174",
+                        DEFAULT: "#611bf8"
+                    }
+                }
+            },
+            fontSize: {
+                xs: ["12px", {lineHeight: "19.200000000000003px"}],
+                sm: ["14px", {lineHeight: "21px"}],
+                base: ["16px", {lineHeight: "25.6px"}],
+                lg: ["18px", {lineHeight: "27px"}],
+                xl: ["20px", {lineHeight: "28px"}],
+                "2xl": ["24px", {lineHeight: "31.200000000000003px"}],
+                "3xl": ["30px", {lineHeight: "36px"}],
+                "4xl": ["36px", {lineHeight: "41.4px"}],
+                "5xl": ["48px", {lineHeight: "52.800000000000004px"}],
+                "6xl": ["60px", {lineHeight: "66px"}],
+                "7xl": ["72px", {lineHeight: "75.60000000000001px"}],
+                "8xl": ["96px", {lineHeight: "100.80000000000001px"}],
+                "9xl": ["128px", {lineHeight: "134.4px"}]
+            },
+            borderRadius: {
+                none: "0px",
+                sm: "6px",
+                DEFAULT: "12px",
+                md: "18px",
+                lg: "24px",
+                xl: "36px",
+                "2xl": "48px",
+                "3xl": "72px",
+                full: "9999px"
+            },
+            spacing: {
+                0: "0px",
+                1: "4px",
+                2: "8px",
+                3: "12px",
+                4: "16px",
+                5: "20px",
+                6: "24px",
+                7: "28px",
+                8: "32px",
+                9: "36px",
+                10: "40px",
+                11: "44px",
+                12: "48px",
+                14: "56px",
+                16: "64px",
+                20: "80px",
+                24: "96px",
+                28: "112px",
+                32: "128px",
+                36: "144px",
+                40: "160px",
+                44: "176px",
+                48: "192px",
+                52: "208px",
+                56: "224px",
+                60: "240px",
+                64: "256px",
+                72: "288px",
+                80: "320px",
+                96: "384px",
+                px: "1px",
+                0.5: "2px",
+                1.5: "6px",
+                2.5: "10px",
+                3.5: "14px"
+            }
+        },
+        plugins: [],
+    }
+</script>
+</body>
+</html>

@@ -1,1 +1,1 @@
-EcoTracker - это статический сайт с информацией где вы можете используя калькулятор узнать свой углеродный след, также вы можете зарабатывать достижения за определенные числа в калькуляторе углеродного следа.
+EcoTracker is a static website with information where you can use a calculator to find out your carbon footprint, also you can earn achievements for certain numbers in the carbon footprint calculator.
